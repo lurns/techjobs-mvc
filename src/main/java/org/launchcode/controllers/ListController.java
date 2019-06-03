@@ -40,7 +40,12 @@ public class ListController {
         if (column.equals("all")) {
             ArrayList<HashMap<String, String>> jobs = JobData.findAll();
             model.addAttribute("title", "All Jobs");
+            int counter = 0;
             model.addAttribute("jobs", jobs);
+            for (HashMap<String, String> job : jobs) {
+                counter++;
+            }
+            model.addAttribute("counter", counter);
             return "list-jobs";
         } else {
             ArrayList<String> items = JobData.findAll(column);
@@ -54,12 +59,20 @@ public class ListController {
 
     @RequestMapping(value = "jobs")
     public String listJobsByColumnAndValue(Model model,
-            @RequestParam String column, @RequestParam String value) {
-
-        ArrayList<HashMap<String, String>> jobs = JobData.findByColumnAndValue(column, value);
-        model.addAttribute("title", "Jobs with " + columnChoices.get(column) + ": " + value);
-        model.addAttribute("jobs", jobs);
-
-        return "list-jobs";
+            @RequestParam String searchType, @RequestParam String searchTerm) {
+        model.addAttribute("columns", columnChoices);
+        int counter = 0; //count jobs
+            ArrayList<HashMap<String, String>> jobs = JobData.findByColumnAndValue(searchType, searchTerm);
+            for (HashMap<String, String> job : jobs) {
+                counter++;
+            }
+            model.addAttribute("jobs", jobs);
+            model.addAttribute("counter", counter);
+            return "list-jobs";
+//        ArrayList<HashMap<String, String>> jobs = JobData.findByColumnAndValue(column, item);
+//        model.addAttribute("title", "Jobs with " + columnChoices.get(column) + ": " + item);
+//        model.addAttribute("jobs", jobs);
+//
+//        return "list-jobs";
     }
 }
